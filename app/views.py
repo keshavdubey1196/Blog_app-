@@ -1,31 +1,18 @@
 from flask import render_template, flash, redirect, url_for, request
-from app.models import User
-from app.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from app.models import User, Post
+from app.forms import RegistrationForm, LoginForm, \
+       UpdateAccountForm, PostForm
 from app import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 import os
 from PIL import Image
 
-posts = [
-    {
-        'author': 'Corey Schafer',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'April 20, 2018'
-    },
-    {
-        'author': 'Jane Doe',
-        'title': 'Blog Post 2',
-        'content': 'Second post content',
-        'date_posted': 'April 21, 2018'
-    }
-]
-
 
 @app.route("/")
 @app.route("/home")
 def home():
+    posts = Post.query.all()
     return render_template('home.html', posts=posts)
 
 
@@ -52,7 +39,7 @@ def register():
         db.session.commit()
         flash('Your account has been created!', 'success')
         return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -67,7 +54,8 @@ def login():
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user, remember=form.data['remember'])
             next_page = request.args.get('next')
-            return redirect(next_page if next_page else redirect(url_for('home')))
+            return redirect(
+                next_page if next_page else redirect(url_for('home')))
         else:
             flash('Login Unsuccessful. Check email and password.', 'danger')
     return render_template('login.html', form=form)
@@ -85,13 +73,13 @@ def save_picture(form_picture):
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(
         app.root_path, 'static/profile_pics', picture_fn)
-
     output_size = (125, 125)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
 
     return picture_fn
+
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
@@ -112,3 +100,22 @@ def account():
     file = current_user.image_file
     image_file = url_for('static', filename='profile_pics/' + file)
     return render_template('account.html', image_file=image_file, form=form)
+
+
+@app.route('/post/new', methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        title = form.data['title']
+        content = form.data['content']
+        post = Post(
+            title=title,
+            content=content,
+            author=current_user
+        )
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', form=form)
