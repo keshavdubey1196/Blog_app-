@@ -12,12 +12,6 @@ def generate_secret_key():
 ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg'])
 
 
-def allowed_file(*filenames):
-    for filename in filenames:
-        print('.' in filename and filename.rsplit(
-            '.', 1)[1].lower() in ALLOWED_EXTENSIONS)
-
-
 if __name__ == "__main__":
     print(generate_secret_key())
     # allowed_file("hello.txt", "hello.mp2")
