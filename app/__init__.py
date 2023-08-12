@@ -1,5 +1,5 @@
 from flask import Flask
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 # import os
 from flask_sqlalchemy import SQLAlchemy
 # from flask_migrate import Migrate
@@ -8,7 +8,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from app.config import Config
 
-load_dotenv()
+# load_dotenv()
 
 # app = Flask(__name__)
 # app.secret_key = os.environ.get('SECRET_KEY')
@@ -42,13 +42,13 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     mail.init_app(app)
     # migrate=Migrate(app,db)
-
     from app.users.views import users
     from app.main.views import main
     from app.posts.views import posts
-
+    from app.errors.handlers import errors
     app.register_blueprint(users)
     app.register_blueprint(main)
     app.register_blueprint(posts)
+    app.register_blueprint(errors)
 
     return app
