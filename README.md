@@ -15,7 +15,7 @@ MAIL_PORT=587
 MAIL_SERVER=smtp.googlemail.com
 
 Here is the live link:
-    https://flask-blog-app-ccj2.onrender.com
+    https://flask-blog-app-ccj2.onrender.com😊
 
 IF the link is broken, contact me up Keshavsharma1419@gmail.com.
 
