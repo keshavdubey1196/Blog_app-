@@ -20,7 +20,7 @@ Here is the live link:
 IF the link is broken, contact me up Keshavsharma1419@gmail.com.
 
 Instructions to clone:
-  - Copy the repo link and clone it one your pc using    git clone repo_link
+  - Copy the repo link and clone it on your pc using    git clone repo_link
   - Install a virtual env using    python -m pip venv env
   - Activate the env using env/scripts/activate  (if on windows)
   - Install all the requirements using   python -m pip install -r requirements.txt
